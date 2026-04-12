@@ -1,0 +1,102 @@
+<%- include('partials/header', { title: book.title }) %>
+
+<div class="detail-page">
+
+  <nav class="breadcrumb">
+    <a href="/books" class="breadcrumb-link">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><polyline points="10,3 5,8 10,13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Library
+    </a>
+    <span class="breadcrumb-sep">/</span>
+    <span class="breadcrumb-current"><%= book.title.length > 32 ? book.title.substring(0,32)+'…' : book.title %></span>
+  </nav>
+
+  <div class="detail-layout">
+
+    <!-- Cover Column -->
+    <aside class="detail-aside">
+      <div class="detail-cover-wrap">
+        <% const detailCover = book.coverUrl || (book.isbn ? 'https://covers.openlibrary.org/b/isbn/' + book.isbn.replace(/[-\s]/g,'') + '-L.jpg' : null); %>
+        <% if (detailCover) { %>
+          <img
+            class="detail-cover-img"
+            src="<%= detailCover %>"
+            alt="Cover of <%= book.title %>"
+            onerror="this.parentElement.classList.add('cover-missing')"
+          />
+        <% } %>
+        <div class="detail-cover-fallback">
+          <span class="detail-fallback-initial"><%= book.title.charAt(0) %></span>
+        </div>
+      </div>
+
+      <div class="detail-meta-sidebar">
+        <% if (book.isbn) { %>
+          <div class="meta-row">
+            <span class="meta-key">ISBN</span>
+            <code class="meta-val"><%= book.isbn %></code>
+          </div>
+        <% } %>
+        <% if (book.date_read) { %>
+          <div class="meta-row">
+            <span class="meta-key">Finished</span>
+            <span class="meta-val"><%= new Date(book.date_read).toLocaleDateString('en-US', {year:'numeric', month:'long', day:'numeric'}) %></span>
+          </div>
+        <% } %>
+        <% if (book.created_at) { %>
+          <div class="meta-row">
+            <span class="meta-key">Added</span>
+            <span class="meta-val"><%= new Date(book.created_at).toLocaleDateString('en-US', {year:'numeric', month:'short', day:'numeric'}) %></span>
+          </div>
+        <% } %>
+      </div>
+
+      <div class="detail-sidebar-actions">
+        <a href="/books/<%= book.id %>/edit" class="btn-outline">Edit entry</a>
+        <form action="/books/<%= book.id %>/delete" method="POST">
+          <button type="submit" class="btn-ghost-danger" onclick="return confirm('Delete this book permanently?')">Delete</button>
+        </form>
+      </div>
+    </aside>
+
+    <!-- Info Column -->
+    <div class="detail-main">
+      <header class="detail-header">
+        <h1 class="detail-title"><%= book.title %></h1>
+        <p class="detail-author">by <strong><%= book.author %></strong></p>
+
+        <% if (book.rating) { %>
+          <div class="detail-rating">
+            <div class="detail-stars-wrap" aria-label="Rating <%= book.rating %> out of 10">
+              <div class="detail-stars-track">
+                <div class="detail-stars-fill" style="width:<%= (book.rating/10)*100 %>%"></div>
+              </div>
+            </div>
+            <div class="detail-rating-label">
+              <span class="rating-big"><%= book.rating %></span>
+              <span class="rating-denom">&thinsp;/ 10</span>
+            </div>
+          </div>
+        <% } %>
+      </header>
+
+      <% if (book.notes) { %>
+        <section class="detail-notes-section">
+          <h2 class="section-label">My Notes</h2>
+          <div class="detail-notes-body">
+            <% book.notes.split('\n').forEach(para => { if(para.trim()) { %>
+              <p><%= para %></p>
+            <% } }) %>
+          </div>
+        </section>
+      <% } else { %>
+        <div class="notes-empty">
+          <p>No notes recorded yet.</p>
+          <a href="/books/<%= book.id %>/edit">Add some notes →</a>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

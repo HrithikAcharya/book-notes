@@ -1,0 +1,8 @@
+<%- include('partials/header', { title: 'Error' }) %>
+<div class="error-page">
+  <div class="error-code">Oops</div>
+  <h1 class="error-title">Something went wrong</h1>
+  <p class="error-body"><%= message %></p>
+  <a href="/books" class="btn-primary-lg">Back to Library</a>
+</div>
+<%- include('partials/footer') %>

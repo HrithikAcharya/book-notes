@@ -1,0 +1,119 @@
+<%- include('partials/header', { title: book ? 'Edit: ' + book.title : 'Add a Book' }) %>
+
+<div class="form-page">
+  <div class="form-header">
+    <a href="/books" class="breadcrumb-link">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><polyline points="10,3 5,8 10,13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Library
+    </a>
+    <h1 class="form-title"><%= book ? 'Edit Entry' : 'New Entry' %></h1>
+    <p class="form-subtitle"><%= book ? 'Update the details for <em>' + book.title + '</em>' : 'Record a book you\'ve read, with your notes and rating.' %></p>
+  </div>
+
+  <form action="<%= action %>" method="POST" class="book-form" id="bookForm">
+
+    <div class="form-grid">
+
+      <div class="form-group form-group--wide">
+        <label for="title" class="form-label">
+          Title
+          <span class="form-required" aria-label="required">*</span>
+        </label>
+        <input
+          type="text" id="title" name="title"
+          class="form-input"
+          value="<%= book ? book.title : '' %>"
+          required autocomplete="off"
+          placeholder="e.g. The Pragmatic Programmer"
+        />
+      </div>
+
+      <div class="form-group form-group--wide">
+        <label for="author" class="form-label">
+          Author
+          <span class="form-required" aria-label="required">*</span>
+        </label>
+        <input
+          type="text" id="author" name="author"
+          class="form-input"
+          value="<%= book ? book.author : '' %>"
+          required autocomplete="off"
+          placeholder="e.g. David Thomas"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="isbn" class="form-label">
+          ISBN
+          <span class="form-hint">for cover art</span>
+        </label>
+        <input
+          type="text" id="isbn" name="isbn"
+          class="form-input"
+          value="<%= book ? (book.isbn || '') : '' %>"
+          placeholder="e.g. 9780135957059"
+        />
+        <p class="form-helper">
+          Find ISBNs at <a href="https://openlibrary.org" target="_blank" rel="noopener">openlibrary.org</a>
+        </p>
+      </div>
+
+      <div class="form-group">
+        <label for="date_read" class="form-label">Date Finished</label>
+        <input
+          type="date" id="date_read" name="date_read"
+          class="form-input"
+          value="<%= book && book.date_read ? new Date(book.date_read).toISOString().split('T')[0] : '' %>"
+        />
+      </div>
+
+    </div>
+
+    <!-- Rating -->
+    <div class="form-group rating-group">
+      <label class="form-label">Rating</label>
+      <div class="rating-widget">
+        <div class="rating-stars-input" id="starInput" role="radiogroup" aria-label="Rating 1 to 10">
+          <% for(let i = 1; i <= 10; i++) { %>
+            <button
+              type="button"
+              class="star-btn"
+              data-value="<%= i %>"
+              aria-label="<%= i %> out of 10"
+            >★</button>
+          <% } %>
+        </div>
+        <div class="rating-readout">
+          <span id="ratingDisplay"><%= book && book.rating ? book.rating : '—' %></span>
+          <span class="rating-readout-denom"><%= book && book.rating ? '/ 10' : '' %></span>
+        </div>
+        <input type="hidden" name="rating" id="ratingInput" value="<%= book && book.rating ? book.rating : '' %>" />
+      </div>
+    </div>
+
+    <!-- Notes -->
+    <div class="form-group notes-group">
+      <label for="notes" class="form-label">
+        Notes &amp; Reflections
+        <span class="char-count" id="charCount"></span>
+      </label>
+      <textarea
+        id="notes" name="notes"
+        class="form-input form-textarea"
+        rows="7"
+        placeholder="What did you learn? Key ideas, memorable quotes, personal reactions…"
+      ><%= book ? (book.notes || '') : '' %></textarea>
+    </div>
+
+    <div class="form-footer">
+      <button type="submit" class="btn-submit">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><polyline points="2,8 6,12 14,4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <%= book ? 'Save Changes' : 'Add to Library' %>
+      </button>
+      <a href="<%= book ? '/books/' + book.id : '/books' %>" class="btn-cancel">Cancel</a>
+    </div>
+
+  </form>
+</div>
+
+<%- include('partials/footer') %>

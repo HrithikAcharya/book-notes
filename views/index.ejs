@@ -1,0 +1,105 @@
+<%- include('partials/header', { title: 'My Library' }) %>
+
+<section class="library-hero">
+  <div class="hero-text">
+    <p class="hero-eyebrow">Your Reading Journal</p>
+    <h1 class="hero-title">My Library</h1>
+    <p class="hero-count">
+      <span class="count-number"><%= books.length %></span>
+      <span class="count-label">book<%= books.length !== 1 ? 's' : '' %> recorded</span>
+    </p>
+  </div>
+  <div class="hero-decoration" aria-hidden="true">
+    <span class="deco-char">&ldquo;</span>
+  </div>
+</section>
+
+<div class="library-controls">
+  <div class="sort-group">
+    <span class="sort-label">Sort by</span>
+    <div class="sort-pills">
+      <a href="/books?sort=recent" class="pill <%= sort === 'recent' ? 'pill--active' : '' %>">Recent</a>
+      <a href="/books?sort=rating" class="pill <%= sort === 'rating' ? 'pill--active' : '' %>">Top Rated</a>
+      <a href="/books?sort=title"  class="pill <%= sort === 'title'  ? 'pill--active' : '' %>">A – Z</a>
+      <a href="/books?sort=author" class="pill <%= sort === 'author' ? 'pill--active' : '' %>">Author</a>
+    </div>
+  </div>
+</div>
+
+<% if (books.length === 0) { %>
+  <div class="empty-state">
+    <div class="empty-icon">
+      <svg width="48" height="48" viewBox="0 0 48 48" fill="none"><rect x="8" y="6" width="26" height="36" rx="3" stroke="currentColor" stroke-width="1.5"/><rect x="12" y="6" width="26" height="36" rx="3" fill="var(--cream)" stroke="currentColor" stroke-width="1.5"/><line x1="18" y1="16" x2="30" y2="16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="18" y1="21" x2="30" y2="21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="18" y1="26" x2="24" y2="26" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </div>
+    <h2 class="empty-title">Your shelf is empty</h2>
+    <p class="empty-body">Start building your reading journal by adding the first book you want to remember.</p>
+    <a href="/books/new" class="btn-primary-lg">Add your first book</a>
+  </div>
+<% } else { %>
+  <div class="book-grid">
+    <% books.forEach((book, i) => {
+      const ratingPct = book.rating ? (book.rating / 10) * 100 : null;
+      const coverUrl = book.isbn
+        ? 'https://covers.openlibrary.org/b/isbn/' + book.isbn.replace(/[-\s]/g,'') + '-M.jpg'
+        : null;
+    %>
+      <article class="book-card" style="animation-delay: <%= i * 0.04 %>s">
+        <a href="/books/<%= book.id %>" class="card-cover-wrap" tabindex="-1" aria-hidden="true">
+          <% if (coverUrl) { %>
+            <img
+              class="card-cover"
+              src="<%= coverUrl %>"
+              alt=""
+              loading="lazy"
+              onerror="this.parentElement.classList.add('no-img')"
+            />
+          <% } %>
+          <div class="card-cover-fallback">
+            <span class="fallback-initial"><%= book.title.charAt(0) %></span>
+          </div>
+          <% if (book.rating) { %>
+            <div class="card-rating-badge"><%= book.rating %><span>/10</span></div>
+          <% } %>
+        </a>
+
+        <div class="card-body">
+          <h2 class="card-title">
+            <a href="/books/<%= book.id %>"><%= book.title %></a>
+          </h2>
+          <p class="card-author"><%= book.author %></p>
+
+          <% if (book.rating) { %>
+            <div class="card-stars" aria-label="Rating: <%= book.rating %> out of 10">
+              <div class="stars-track">
+                <div class="stars-fill" style="width: <%= ratingPct %>%"></div>
+              </div>
+            </div>
+          <% } %>
+
+          <% if (book.date_read) { %>
+            <time class="card-date" datetime="<%= new Date(book.date_read).toISOString().split('T')[0] %>">
+              <%= new Date(book.date_read).toLocaleDateString('en-US', {year:'numeric', month:'short'}) %>
+            </time>
+          <% } %>
+
+          <% if (book.notes) { %>
+            <p class="card-excerpt"><%= book.notes.length > 100 ? book.notes.substring(0, 100) + '…' : book.notes %></p>
+          <% } %>
+
+          <div class="card-actions">
+            <a href="/books/<%= book.id %>/edit" class="card-action card-action--edit" aria-label="Edit <%= book.title %>">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9.5 2L12 4.5 5 11.5H2.5V9L9.5 2Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+            </a>
+            <form action="/books/<%= book.id %>/delete" method="POST" class="card-delete-form">
+              <button type="submit" class="card-action card-action--delete" aria-label="Delete <%= book.title %>" onclick="return confirm('Delete \u201c<%= book.title %>\u201d permanently?')">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><polyline points="2,3.5 12,3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M5 3.5V2.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5v1" stroke="currentColor" stroke-width="1.3"/><path d="M3.5 3.5l.6 8h5.8l.6-8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </form>
+          </div>
+        </div>
+      </article>
+    <% }) %>
+  </div>
+<% } %>
+
+<%- include('partials/footer') %>
