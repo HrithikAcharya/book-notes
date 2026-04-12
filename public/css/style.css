@@ -441,3 +441,67 @@ code.meta-val{font-family:var(--font-mono);font-size:.74rem;}
   .footer-inner{flex-direction:column;align-items:flex-start;gap:.2rem;}
   .footer-divider{display:none;}
 }
+/* ── Mobile-first improvements (≤480px) ─────────────────────── */
+@media(max-width:480px){
+
+  /* Header — stack if needed, ensure tap targets */
+  .header-inner { height: auto; padding: .75rem 1rem; flex-wrap: wrap; gap: .5rem; }
+  .logo { font-size: 1.2rem; }
+  .logo-mark { width: 30px; height: 30px; font-size: 1rem; }
+  .nav-cta { font-size: .78rem; padding: .4rem .85rem; }
+
+  /* Hero — more compact */
+  .library-hero { padding: 1.5rem 0 1.2rem; }
+  .hero-title { font-size: 2rem; }
+  .hero-eyebrow { font-size: .68rem; }
+  .count-number { font-size: 1.1rem; }
+
+  /* Sort pills — wrap cleanly */
+  .library-controls { flex-direction: column; align-items: flex-start; gap: .6rem; }
+  .sort-group { flex-direction: column; align-items: flex-start; gap: .4rem; }
+  .sort-pills { gap: .3rem; }
+  .pill { font-size: .74rem; padding: .28rem .75rem; }
+
+  /* Book grid — 2 columns fixed */
+  .book-grid { grid-template-columns: 1fr 1fr; gap: .75rem; }
+
+  /* Bigger tap targets on card actions */
+  .card-action { width: 36px; height: 36px; }
+
+  /* Detail page — full single column */
+  .detail-aside {
+    display: flex; flex-direction: column; gap: 1rem;
+  }
+  .detail-cover-wrap { max-width: 180px; margin: 0 auto; }
+  .detail-title { font-size: 1.5rem; }
+  .detail-sidebar-actions { flex-direction: row; }
+
+  /* Form — comfortable on mobile */
+  .form-page { padding-bottom: 2rem; }
+  .form-title { font-size: 1.8rem; }
+  .form-input { font-size: 1rem; padding: .7rem .9rem; }
+  .form-footer { flex-direction: column; align-items: stretch; }
+  .btn-submit { justify-content: center; padding: .85rem; }
+  .btn-cancel { text-align: center; }
+
+  /* Rating stars — bigger touch area */
+  .star-btn { font-size: 1.8rem; }
+  .rating-widget { gap: .6rem; }
+
+  /* Breadcrumb — prevent overflow */
+  .breadcrumb { flex-wrap: wrap; }
+  .breadcrumb-current { font-size: .75rem; max-width: 200px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* Footer */
+  .site-footer { padding: 1rem; }
+}
+
+/* ── Very small phones (iPhone SE = 375px, older Androids) ───── */
+@media(max-width:375px){
+  .book-grid { grid-template-columns: 1fr 1fr; gap: .6rem; }
+  .card-body { padding: .75rem .75rem .65rem; }
+  .card-title { font-size: .88rem; }
+  .hero-title { font-size: 1.75rem; }
+  .nav-cta span { display: none; } /* hide "Add Book" text, keep + icon */
+}
