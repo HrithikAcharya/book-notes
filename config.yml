@@ -1,0 +1,8 @@
+tunnel: f86bacb4-ce90-459d-932d-58171c8b8c92
+
+credentials-file: /home/mint/Downloads/book-notes/.cloudflared/TUNNEL_ID.json
+
+ingress:
+  - hostname: book-notesbyha.duckdns.org
+    service: http://localhost:3000
+  - service: http_status:404
